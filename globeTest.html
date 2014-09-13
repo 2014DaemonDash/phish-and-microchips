@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <script src="http://www.webglearth.com/v2/api.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script>
+	  var earth;
+	  var polygonC;
+	  var blips = [];
+	    
+	  var BLIP_DURATION = 2000;
+	  var BLIP_RADIUS = 3;
+	  var BLIP_MAX_SCALE = 2;
+    
+      function initialize() {
+
+        var bounds = [[35.98245136, -112.26379395], [36.13343831, -112.10998535]];
+        earth = new WE.map('earth_div');
+        earth.setView([36.057944835, 112.18688965], 1);
+        var osm = WE.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg', {
+          attribution: 'Tiles Courtesy of MapQuest'
+        }).addTo(earth);
+
+        // var grandcanyon = WE.tileLayer('http://tileserver.maptiler.com/grandcanyon/{z}/{x}/{y}.png', {
+          // bounds: bounds,
+          // minZoom: 10,
+          // maxZoom: 16
+        // });
+        // grandcanyon.addTo(earth);
+        
+        // earth.panInsideBounds(bounds);
+        
+        blips.push(cr_blip(earth.getCenter()));
+        
+        setInterval(updateVis, 33);
+      }
+      
+      function updateVis() {
+      	cur_time = Date.now();
+      	
+      	for (var i = 0;i < blips.length; i++) {
+      		blip = blips[i];
+      		updateBlip(blip, cur_time);
+      	}
+      	
+      	if(Math.random() > .95) {
+        	// blips.push(cr_blip([0.1,earth.getCenter()[1] + Math.random()*80 - 40]));
+
+        	blips.push(cr_blip([earth.getCenter()[0] + Math.random()*80 - 40,earth.getCenter()[1] + Math.random()*80 - 40]));
+      	}
+      	
+      }
+      
+      function updateBlip(blip, time) {
+      	if(time-blip.time >= BLIP_DURATION) {
+          blip.marker.detach();
+      		blip.polygon.destroy();
+      		blips.splice(blips.indexOf(blip),1);
+      		
+      		return;
+      	}
+      	
+      	blip.polygon.setFillColor("#a0f", .5-(time-blip.time)*.5/BLIP_DURATION);
+      	
+      	new_pts = circle(blip.latlng, 20, BLIP_RADIUS*(1 + (BLIP_MAX_SCALE - 1) * (time - blip.time)/BLIP_DURATION));
+      	
+      	for (var i = 0; i < blip.pt_ids.length; i++) {
+      		blip.polygon.movePoint(blip.pt_ids[i], new_pts[i][0], new_pts[i][1]);
+      	}
+      }
+      
+      function circle(latlng, sides, rad) {
+      	var pts = [];
+      	
+      	// lngWidth = Math.acos(Math.cos(latlng[1] / 180 * Math.PI)/Math.sin(latlng[0] / 180 * Math.PI)) / Math.PI * 180;
+      	// console.log(lngWidth);
+      	
+      	for(var i = 0; i < sides; i++) {
+      		pts.push([Math.cos(i*(2*Math.PI / sides))*rad + latlng[0],Math.sin(i*(2*Math.PI / sides))*rad/Math.cos((Math.cos(i*(2*Math.PI / sides))*rad + latlng[0]) / 180 * Math.PI) + latlng[1]]);
+
+      	}
+      	
+      	return pts;
+      }
+      
+      function cr_blip(latlng) {
+      	var options = {color: '#000', opacity: 1, fillColor: '#a0f', fillOpacity: 0.5, weight: -1};
+      	
+      	var pts = circle(latlng, 20, BLIP_RADIUS);
+      	
+      	var pt_ids = [];
+      	
+    		polygonC = new WebGLEarth.Polygon(earth);
+    		polygonC.setFillColor("#a0f",0.5);
+    		polygonC.setStrokeColor("#000",0);
+    		
+    		for(var i = 0; i < pts.length; i++) {
+    			pt_ids.push(polygonC.addPoint(pts[i][0],pts[i][1]));
+    		}
+    		
+    		polygonC.showDraggers(false);
+    		
+        var marker = WE.marker([latlng[0], latlng[1]]).addTo(earth);
+        marker.bindPopup("This is a great location", {maxWidth: 150, closeButton: true}).openPopup();
+
+    		return {polygon: polygonC,
+  				pt_ids: pt_ids,
+  				latlng: latlng,
+  				time: Date.now(),
+          marker: marker
+    		};
+
+
+      }
+    </script>
+    <style>
+      html, body{padding: 0; margin: 0;}
+      #earth_div{top: 0; right: 0; bottom: 0; left: 0; position: absolute !important;}
+    </style>
+    <title>WebGL Earth API: Maps rendered with MapTiler</title>
+  </head>
+  <body onload="initialize()">
+    <div id="earth_div"></div>
+  </body>
+</html>
