@@ -21,5 +21,12 @@ def get_tweets(hashtag_list):
     tweetls = api.request('statuses/filter', {'track':hashtag_list})
     for tweet in tweetls.get_iterator():
         if(tweet['coordinates'] != None):
-            tweetEntry = Tweet(text=tweet['text'], uid=tweet['user']['id'], latitude = tweet['geo']['coordinates'][0], longitude = tweet['geo']['coordinates'][1], datetime = datetime.datetime.now)
+            
+            myHashes = ""
+            
+            for partialHashtag in tweet['text'].split('#')[1:]:
+                myHashes += partialHashtag[:partialHashtag.find(' ')] + ","
+            myHashes = myHashes[:len(myHashes) - 1]
+            
+            tweetEntry = Tweet(text=tweet['text'], hashtags=myHashes, uid=tweet['user']['id'], latitude = tweet['geo']['coordinates'][0], longitude = tweet['geo']['coordinates'][1])
             tweetEntry.save()

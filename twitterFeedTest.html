@@ -7,7 +7,7 @@
         <script>
         
             $(document).ready(function() {
-                $.ajax({url:"127.0.0.1:8000/tweetpipeline/?old_time="+$.now+"&max_latitude=45&max_longitude=-80&min_latitude=55&min_longitude=-70",success:function(result){
+                $.ajax({url:"127.0.0.1:8000/tweetpipeline/?old_time="+$.now+"&max_latitude=90&max_longitude=90&min_latitude=-90&min_longitude=-90",success:function(result){
                     $("#div1").html(result);
                 }});
             });
