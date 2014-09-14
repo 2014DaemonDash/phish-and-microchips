@@ -187,6 +187,17 @@
       	
       	return 2 * Math.asin(Math.sqrt(sindlat*sindlat + cos(latlng1[0])*cos(latlng2[0])*sindlng*sindlng));
       }
+    
+      function load_sidebar(tweet_cluster){
+          for(var i=0; i<tweet_cluster.tweets.length; i++){
+              $("#sidebar").append("<div class='tweet_sidebar'>"+tweet_cluster.tweets[i].text+"</div>");
+          }
+          $("#sidebar").attr('class','openingClass');
+      }
+    
+      function close_sidebar(){
+          $("#sidebar").attr('class','closingClass');
+      }
     </script>
     <style>
       html, body{padding: 0; margin: 0;}
@@ -197,6 +208,10 @@
   </head>
   <body onload="initialize()">
     <div id="earth_div"></div>
-  	<div id="sidebar"></div>
+  	<div id="sidebar">
+        <div id="titlebar">
+            <div id="X"; onclick="close_siderbar()">X</div>
+        </div>
+    </div>
   </body>
 </html>
