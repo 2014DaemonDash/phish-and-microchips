@@ -2,6 +2,10 @@
     font-family: OrmontLight;
     src: url(Ormont_Light.ttf);
 }
+@font-face {
+    font-family: Rocko;
+    src: url(RockoFLF.ttf);
+}
 
 html {
 	height:100%;
@@ -10,6 +14,9 @@ html {
 body {
 	height:100%;
 	background-color:#aaa;
+	overflow:hidden;
+	
+	font-family:Rocko,Helvetica,sans-serif;
 }
 
 #sidebar.closingClass{
@@ -28,7 +35,6 @@ body {
 #sidebar {
 	padding:20px;
 	background-color:#888;
-	border-left:1px #f0a;
 	
 	box-shadow: -20px 0px 0px 10px rgba(0,0,0,.3);
 	
@@ -38,6 +44,69 @@ body {
 	height:100%;
 	float:right;
 	width:0%;
+}
+
+#shadow {
+	background-color:rgba(0,200,230,.3);
+	width:700px;
+	height:700px;
+	position:absolute;
+	left:200px;
+	top:70px;
+	
+	z-index:-2;
+	
+	border-radius:350px;
+}
+
+#X {
+	/*background-color:white;*/
+	color: #fff;
+	font-weight: 300;
+	font-family: Arial, sans-serif;
+	cursor: pointer;
+	width:15px;
+	height:15px;
+}
+
+.openingClass #open_button {
+	opacity:0;
+}
+
+#open_button {
+	transition:opacity 1s;
+	opacity:1;
+	
+	position:absolute;
+	top:47%;
+	left:-40px;
+	width:30px;
+	height:60px;
+	border-radius: 30px 0px 0px 30px;
+	padding-top:28px;
+	padding-left:15px;
+	
+	background-color:#888;
+	color: #fff;
+	font-weight: 300;
+	font-family: Arial, sans-serif;
+	cursor: pointer;
+	font-size:24px;
+}
+
+.tweet_sidebar {
+	border-bottom: 1px solid #999;
+	padding-top:7px;
+	padding-bottom:7px;
+}
+
+#side_content {
+	background-color:#aaa;
+	margin:10px;
+	color:white;
+	padding:7px;
+	height:90%;
+	overflow:auto;
 }
 
 #title {
