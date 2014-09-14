@@ -1,14 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-<<<<<<< HEAD
 import json
-=======
->>>>>>> e93cf83c73bb1c7c337351dffbf52087db8b4c64
 
 def globe_page_view(request):
     return render(request,'globeTest.html',None)
 
-<<<<<<< HEAD
 
 def leaderboard(request):
     
@@ -18,10 +14,20 @@ def leaderboard(request):
     return HttpResponse(json.dumps(leaders))
 
 def userscores(request):
-    return HttpResponse("unimplemented")
-=======
+    out = {}
+
+    users = request.GET.get('users',"").split(',')
+    #set this with the user data
+    db = {'alice':123,'bob':456,'charlie':789}
+    
+    for k,v in db.iteritems():
+        if k in users:
+            out[k]=v
+        
+    return HttpResponse(json.dumps(out))
+
 def test_view(request):
     return HttpResponse("hello world");
 
 
->>>>>>> e93cf83c73bb1c7c337351dffbf52087db8b4c64
+
