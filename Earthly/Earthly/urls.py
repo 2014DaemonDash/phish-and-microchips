@@ -9,18 +9,12 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.globe_page_view),
-
-    #url(r'^testtwit/$', twitterhandler.get_tweets),
-
-    #what do we do here?
-    #url(r'^background/([0-9]{4})/([0-9]{2})/' views.month_archive),
+    url(r'^test/$', twitterhandler.get_tweets),
     
     #requires: none
-    #returns: json [{username:score},...]
+    #returns json object {'name':score,...}
     url(r'^leaderboard/', views.leaderboard),
-    #requires: ?users=name,name,...
+    #requires: ?users='name1,name3,...'
+    #returns: json object {'name1':score,'name3':score,...}
     url(r'^scoreuser/', views.userscores),
-
-    url(r'^test/$', views.test_view),
-
 )
