@@ -39,7 +39,7 @@
           // opacity: 0.6
         });
         toner.addTo(earth);
-                
+        
         var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler3/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by ME!',
           opacity: 1
@@ -125,14 +125,24 @@
 				pt_ids: pt_ids,
       	};
       }
-      
+    
+    var current_cluster_id = 0;
+    function cluster_next(){
+        c = current_cluster_id;
+        current_cluster_id++;
+        return c;
+    }
+    
       function createCluster(tweet,hashtag) {
       	latlng = [tweet.latitude,tweet.longitude];
+        next = cluster_next();
 		
         var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
-        marker.bindPopup(tweet.text, {maxWidth: 120, closeButton: true}).openPopup();
+        popup = "<div class=popup_text><a href='#'; onclick='openClass("+next+")'></a></div>"
+        marker.bindPopup(popup, {maxWidth: 120, closeButton: true}).openPopup();
 		
 		cluster = {
+            id: next,
 			latlng: latlng,
 			time: Date.now(),
       		marker: marker,
@@ -207,11 +217,21 @@
       	return 2 * Math.asin(Math.sqrt(sindlat*sindlat + Math.cos(latlng1[0])*Math.cos(latlng2[0])*sindlng*sindlng));
       }
     
-      function load_sidebar(tweet_cluster){
-          for(var i=0; i<tweet_cluster.tweets.length; i++){
-              $("#sidebar").append("<div class='tweet_sidebar'>"+tweet_cluster.tweets[i].text+"</div>");
+      function load_sidebar(tweet_cluster_id){
+          the_tweets = null;
+          for(var i=0;i<clusters.length;i++){
+              if(clusters[i].id = tweet_cluster_id){
+                  the_tweets = cluster[i].tweets;
+                  break;
+              }
           }
-          $("#sidebar").attr('class','openingClass');
+          if(the_tweets){
+              $("#sidebar").empty();
+              for(var i=0; i<the_tweets.length; i++){
+                  $("#sidebar").append("<div class='tweet_sidebar'>"+the_tweets[i].text+"</div>");
+              }
+              $("#sidebar").attr('class','openingClass');
+          }
       }
     
       function close_sidebar(){
