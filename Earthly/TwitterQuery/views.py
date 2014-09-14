@@ -34,15 +34,18 @@ def test_view(request):
     return HttpResponse("hello world");
 
 def tweetpipeline(request):
-    old_time = request.GET.get('old_time',datetime.datetime(1990,1,1))
+    old_time = request.GET.get('old_time',0)
     lat_max = request.GET.get('max_latitude',None)
     lon_max = request.GET.get('max_longitude',None)
     lat_min = request.GET.get('min_latitude',None)
     lon_min = request.GET.get('min_longitude',None)
+    
+    dt = datetime.datetime(microseconds=old_time *1000)
+    
     if lat_max is None or lat_min is None or lon_min is None or lon_max is None:
         return HttpResponse("")
     
-    tweets = dbhandler.query_db(lat_min, lat_max, lon_min, lon_max, old_time)
+    tweets = dbhandler.query_db(lat_min, lat_max, lon_min, lon_max, dt)
     jsontweets = "["+tweets.join(',')+"]"
     return HttpResponse(jsontweets)
 
