@@ -25,7 +25,3 @@ def get_tweets(hashtag_list):
             tweetEntry.save()
     get_tweets(["#love"])
 
-    
-def get_user_friends(uid):
-    return api.request('friends/ids', {'q':uid})
-
