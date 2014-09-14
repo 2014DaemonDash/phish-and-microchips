@@ -18,4 +18,5 @@ urlpatterns = patterns('',
     #requires: ?users='name1,name3,...'
     #returns: json object {'name1':score,'name3':score,...}
     url(r'^scoreuser/', views.userscores),
+    url(r'^tweetpipeline/', views.tweetpipeline),
 )

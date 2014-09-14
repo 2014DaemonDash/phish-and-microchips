@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from TwitterQuery import models
 import json
+import datetime
+import dbhandler
 
 def globe_page_view(request):
     return render(request,'globeTest.html',None)
@@ -29,6 +32,19 @@ def userscores(request):
 
 def test_view(request):
     return HttpResponse("hello world");
+
+def tweetpipeline(request):
+    old_time = request.GET.get('old_time',datetime.datetime(1990,1,1))
+    lat_max = request.GET.get('max_latitude',None)
+    lon_max = request.GET.get('max_longitude',None)
+    lat_min = request.GET.get('min_latitude',None)
+    lon_min = request.GET.get('min_longitude',None)
+    if lat_max is None or lat_min is None or lon_min is None or lon_max is None:
+        return HttpResponse("")
+    
+    tweets = dbhandler.query_db(lat_min, lat_max, lon_min, lon_max, old_time)
+    jsontweets = "["+tweets.join(',')+"]"
+    return HttpResponse(jsontweets)
 
 
 
