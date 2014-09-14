@@ -20,7 +20,12 @@ api = TwitterAPI(API_key, API_secret, access_key, access_secret)
 def get_tweets(hashtag_list):
     
     tweetls = api.request('statuses/filter', {'track':hashtag_list})
+<<<<<<< HEAD
     for tweet in tweetls:
+=======
+    #print tweetls.text
+    for tweet in tweetls.get_iterator():
+>>>>>>> FETCH_HEAD
 
         print tweet['text']
 
