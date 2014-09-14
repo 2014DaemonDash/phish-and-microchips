@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <!-- <script src="http://www.webglearth.com/v2/api.js"></script> -->
+    <!-- <script src="http://127.0.0.1:8000/static/lib/WebGLEarth/api.js"></script> -->
+    <script src="static/lib/Cesium/Cesium.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script>
+	  var earth;
+	  var polygonC;
+	  var clusters = [];
+	    
+	  var CLUSTER_DURATION = 15000;
+	  var CLUSTER_POPUP_DURATION = 5000;
+	  var CLUSTER_RADIUS = 10;		//should be zoom-dependent
+	  
+	  var BLIP_DURATION = 2000;
+	  var BLIP_RADIUS = 3;
+	  var BLIP_MAX_SCALE = 2;
+	  
+	  var prevZoom = 1;
+    
+      function initialize() {
+      	initCesium();
+      	register();
+      	
+        // setvarerval(updateVis, 33);
+      }
+      
+      function initCesium() {
+      	var widget = new Cesium.CesiumWidget('cesiumContainer');
+
+      	
+      	// var earth = new Cesium.Viewer('earth_div', {
+		    // imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
+		        // url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+		    // }),
+		    // baseLayerPicker : false
+		// });
+        
+        // var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler2/{z}/{x}/{y}.png', {
+          // attribution: 'Map tiles by ME!',
+          // opacity: 1
+        // });
+        // bg.addTo(earth);
+//         
+        // var toner = WE.tileLayer('http://tile.stamen.com/toner-background/{z}/{x}/{y}.png', {
+          // attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
+          // // opacity: 0.6
+        // });
+        // toner.addTo(earth);
+      }
+      
+      function register() {
+      	
+      }
+      
+      
+      
+      function updateVis() {
+      	cur_time = Date.now();
+      	
+      	for (var i = 0;i < clusters.length; i++) {
+      		cluster = clusters[i];
+      		updateCluster(cluster, cur_time);
+      	}
+      	
+      	
+      	
+      	requestTweets();
+      }
+      
+      function reCluster() {
+      	// Reevaluate clusters on zoom
+      }
+      
+      function manageClusters(tweetList) {
+      	for(var i = 0;i<tweetList.length;i++) {
+      		var foundCluster = false;
+      		for(var j = 0;j<clusters.length;j++) {
+      			if(dist(clusters[j].latlng,tweetlist[i].geo.coordinates)<CLUSTER_RADIUS) {
+      				addToCluster(clusters[j],tweetList[i]);
+      				foundCluster = true;
+      			}
+      		}
+      		
+      		if(!foundCluster) {
+      			creatCluster(tweetList[i],"#GETAHASHTAG");		//TODO: GET A HASHTAG!
+      		}
+      	}
+      }
+      
+      function addToCluster(cluster,tweet) {
+      	cluster.tweets.push(tweet);
+      	cluster.time = Date.now();
+      }
+      
+      function createCluster(tweet,hashtag) {
+      	latlng = tweet.geo.coordinates;		//???????????
+      	
+      	var options = {color: '#000', opacity: 1, fillColor: '#a0f', fillOpacity: 0.5, weight: -1};
+      	
+      	var pts = circle(latlng, 20, cluster_RADIUS);
+      	
+      	var pt_ids = [];
+      	
+		polygonC = new WebGLEarth.Polygon(earth);
+		polygonC.setFillColor("#a0f",0.5);
+		polygonC.setStrokeColor("#000",0);
+		
+        var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
+        marker.bindPopup("This is a great place", {maxWidth: 120, closeButton: true}).openPopup();
+
+		for(var i = 0; i < pts.length; i++) {
+			pt_ids.push(polygonC.addPovar(pts[i][0],pts[i][1]));
+		}
+		
+		polygonC.showDraggers(false);
+		
+		return {
+			latlng: latlng,
+			time: Date.now(),
+      		marker: marker,
+      		tweets: [tweet],
+      		hashtag: hashtag,
+      		blips:[{
+      			polygon: polygonC,
+				time: Date.now(),
+				pt_ids: pt_ids,
+      		}],
+		};
+      }
+      
+      function updateCluster(cluster, time) {
+      	if(time-cluster.time >= CLUSTER_DURATION + CLUSTER_POPUP_DURATION) {
+          	cluster.marker.detach();
+      		clusters.splice(clusters.indexOf(cluster),1);
+      		
+      		return;
+      	}
+      	if(time-cluster.time >= CLUSTER_POPUP_DURATION) {
+      		cluster.marker.closePopup();
+      	}
+      	
+      	for(var i = 0;i<cluster.blips.length;i++) {
+      		updateBlip(cluster,cluster.blips[i],time);
+      	}
+      }
+      
+      function updateBlip(cluster,blip, time) {
+      	if(time-blip.time >= BLIP_DURATION) {
+      		blip.polygon.destroy();
+      		cluster.blips.splice(clusters.indexOf(cluster),1);
+      		
+      		return;
+      	}
+      	
+      	blip.polygon.setFillColor("#a0f", .5-(time-cluster.time)*.5/cluster_DURATION);
+      	
+      	new_pts = circle(cluster.latlng, 20, BLIP_RADIUS*(1 + (BLIP_MAX_SCALE - 1) * (time - blip.time)/BLIP_DURATION));
+      	
+      	for (var i = 0; i < blip.pt_ids.length; i++) {
+      		blip.polygon.movePoint(blip.pt_ids[i], new_pts[i][0], new_pts[i][1]);
+      	}
+      }
+      
+      
+      //HELPER FUNCTIONS
+      
+      function circle(latlng, sides, rad) {		//adjusts for longitude lines converging
+      	var pts = [];
+      	
+      	for(var i = 0; i < sides; i++) {
+      		pts.push([Math.cos(i*(2*Math.PI / sides))*rad + latlng[0],Math.sin(i*(2*Math.PI / sides))*rad/Math.cos((Math.cos(i*(2*Math.PI / sides))*rad + latlng[0]) / 180 * Math.PI) + latlng[1]]);
+
+      	}
+      	
+      	return pts;
+      }
+      
+      function dist(latlng1_deg, latlng2_deg) {		//great circle distance, using haversine formula
+      	var latlng1 = [latlng1_deg[0]*Math.PI/180,latlng1_deg[1]*Math.PI/180];
+      	var latlng2 = [latlng2_deg[0]*Math.PI/180,latlng2_deg[1]*Math.PI/180];
+      	
+      	sindlat = Math.sin(latlng1[0]-latlng2[0]);
+      	sindlng = Math.sin(latlng1[1]-latlng2[1]);
+      	
+      	return 2 * Math.asin(Math.sqrt(sindlat*sindlat + cos(latlng1[0])*cos(latlng2[0])*sindlng*sindlng));
+      }
+    </script>
+    <style>
+      html, body{padding: 0; margin: 0;}
+      #earth_div{top: 0; right: 0; bottom: 0; left: 0; position: absolute !important;}
+    </style>
+    <title>WebGL Earth API: Maps rendered with MapTiler</title>
+  </head>
+  <body onload="initialize()">
+    <div id="cesiumContainer"></div>
+  </body>
+</html>
