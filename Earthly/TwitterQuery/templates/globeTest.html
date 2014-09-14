@@ -18,9 +18,17 @@
         var bounds = [[35.98245136, -112.26379395], [36.13343831, -112.10998535]];
         earth = new WE.map('earth_div');
         earth.setView([36.057944835, 112.18688965], 1);
-        var osm = WE.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg', {
-          attribution: 'Tiles Courtesy of MapQuest'
+        var watercolor = WE.tileLayer('http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
+          attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'//'Tiles Courtesy of MapQuest'
         }).addTo(earth);
+
+        var toner = WE.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
+          attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
+          opacity: 0.6
+        });
+        toner.addTo(earth);
+
+		// 'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
 
         // var grandcanyon = WE.tileLayer('http://tileserver.maptiler.com/grandcanyon/{z}/{x}/{y}.png', {
           // bounds: bounds,
