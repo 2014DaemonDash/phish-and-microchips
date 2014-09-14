@@ -1,4 +1,5 @@
 from TwitterQuery import twitterhandler
+from TwitterQuery.models import HashTag
 from django.core.management.base import NoArgsCommand
 
 class Command(NoArgsCommand):
@@ -6,4 +7,11 @@ class Command(NoArgsCommand):
     can_import_settings = True
 
     def handle_noargs(self, *args, **options):
-        twitterhandler.get_tweets(["#Love","#Hate","#Murica"])
+        hashtags = []
+        
+        for hash in HashTag.objects.all():
+            hashtags.append(hash.text.encode("ascii"));
+        
+        print hashtags
+        
+        twitterhandler.get_tweets(hashtags)
