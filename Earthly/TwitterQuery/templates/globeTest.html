@@ -65,8 +65,8 @@
      	}
       }
       
-      function requestTweets() { //lastQuery
-      	$.ajax({url:"tweetpipeline/?old_time="+1+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
+      function requestTweets() { //
+      	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
       	     success:function(result){
              console.log(result);
              handleTweets(eval(result));
