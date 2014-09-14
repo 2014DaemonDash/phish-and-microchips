@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from TwitterQuery import views
+from TwitterQuery import twitterhandler
 
 urlpatterns = patterns('',
     # Examples:
@@ -9,5 +9,21 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.globe_page_view),
+<<<<<<< HEAD
+    url(r'^test/$', twitterhandler.get_tweets),
+=======
+<<<<<<< HEAD
+    
+    #what do we do here?
+    #url(r'^background/([0-9]{4})/([0-9]{2})/' views.month_archive),
+    
+    #requires: none
+    #returns: json [{username:score},...]
+    url(r'^leaderboard/', views.leaderboard),
+    #requires: ?users='name,name,...'
+    url(r'^scoreuser/', views.userscores),
+=======
     url(r'^test/$', views.test_view),
+>>>>>>> e93cf83c73bb1c7c337351dffbf52087db8b4c64
+>>>>>>> FETCH_HEAD
 )

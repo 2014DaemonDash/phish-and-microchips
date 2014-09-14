@@ -4,7 +4,7 @@
 # Uses TwitterAPI
 # Clone url: https://github.com/geduldig/TwitterAPI.git
 from TwitterAPI import TwitterAPI
-from TwitterQuery.models.py import Tweet
+from TwitterQuery.models import Tweet
 
 
 # Login Credentials for @PhishNMicrochip <Twitter>
@@ -17,7 +17,10 @@ api = TwitterAPI(API_key, API_secret, access_key, access_secret)
 
 # Takes list of single quote strings
 # and single quote string in format YYYY-MM-DD
-def get_tweets(hashtag_list, last_time=None):
+def get_tweets(last_time=None):
+    
+    hashtag_list =  ["#love"]
+    
     for tag in hashtag_list:
         query = tag
         if(last_time !=None):
