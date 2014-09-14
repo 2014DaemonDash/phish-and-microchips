@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html>
+<head><title>Leaderboard</title></head>
+<body>
+
+<h2>Leader Rankings</h2>
+<table>
+<tr>
+<th>User</th><th>Score</th>
+</tr>
+{% for item in leaders %}
+<tr><td>{{item.name}}</td><td>{{item.score}}</td></tr>
+{% endfor %}
+</table>
+
+</body>
+</html>
