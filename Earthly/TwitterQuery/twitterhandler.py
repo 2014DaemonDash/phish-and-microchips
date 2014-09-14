@@ -24,8 +24,8 @@ def get_tweets(hashtag_list):
             tweetEntry = Tweet(text=tweet['text'], uid=tweet['user']['id'], latitude = tweet['geo']['coordinates'][0], longitude = tweet['geo']['coordinates'][1], datetime = datetime.datetime.now)
             tweetEntry.save()
     get_tweets(["#love"])
+
     
 def get_user_friends(uid):
     return api.request('friends/ids', {'q':uid})
-
 
