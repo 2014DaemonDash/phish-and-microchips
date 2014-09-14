@@ -16,19 +16,34 @@ api = TwitterAPI(API_key, API_secret, access_key, access_secret)
 
 # Takes list of single quote strings
 # and single quote string in format YYYY-MM-DD
-def get_tweets(hashtag_list, last_time=None):
+def get_tweets(hashtag_list, minLat, maxLat, minLon, maxLon, last_time=None):
     for tag in hashtag_list:
         query = tag
         if(last_time !=None):
             query += ' since'
             query += last_time
-        tweetls = api.request('search/tweets', {'q':query})#,'g':'39.0012,-76.9317,50mi'})
+        tweetls = api.request('statuses/filter', {'track':[query]})
         for tweet in tweetls.get_iterator():
-            if(tweet['coordinates'] !=None):
-                print tweet
-                print "\n\n\n\n\n"
+            if(tweet['coordinates'] != None):
+                
+                curLat = tweet['geo']['coordinates'][0];
+                curLon = tweet['geo']['coordinates'][1];
+                
+                if(curLat > minLat and curLat < maxLat and curLon > minLon and curLon < maxLon):
+                    
+                    print tweet['text']
+                    print 'Hashtags:'
+                    
+                    for hashy in tweet['text'].split('#')[1:]:
+                        print hashy[:hashy.find(' ')]
+                    
+                    #print tweet
+                    #print tweet['text']
+                    #print tweet['geo']['coordinates']
+
+                    print ''
 
 def get_user_friends(uid):
     return api.request('friends/ids', {'q':uid})
 
-get_tweets(["NashvsHayes"])
+get_tweets(["#love"], 37.0012, 40, -73, -76.9317)
