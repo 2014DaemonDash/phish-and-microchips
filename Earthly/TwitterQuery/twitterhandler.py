@@ -17,21 +17,13 @@ api = TwitterAPI(API_key, API_secret, access_key, access_secret)
 
 # Takes list of single quote strings
 # and single quote string in format YYYY-MM-DD
-def get_tweets(last_time=None):
+def get_tweets(hashtag_list):
     
-    hashtag_list =  ["#love"]
-    
-    for tag in hashtag_list:
-        query = tag
-        if(last_time !=None):
-            query += ' since'
-            query += last_time
-        tweetls = api.request('statuses/filter', {'track':[query]})
-        for tweet in tweetls.get_iterator():
-            if(tweet['coordinates'] != None):
-                
-                tweetEntry = Tweet(text=tweet['text'], uid=tweet['user']['id'], latitude = tweet['geo']['coordinates'][0], longitude = tweet['geo']['coordinates'][1])
-                tweetEntry.save()
+    tweetls = api.request('statuses/filter', {'track':hashtag_list})
+    for tweet in tweetls.get_iterator():
+        if(tweet['coordinates'] != None):
+            tweetEntry = Tweet(text=tweet['text'], uid=tweet['user']['id'], latitude = tweet['geo']['coordinates'][0], longitude = tweet['geo']['coordinates'][1])
+            tweetEntry.save()
 
 def get_user_friends(uid):
     return api.request('friends/ids', {'q':uid})
