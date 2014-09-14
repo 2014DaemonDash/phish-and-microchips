@@ -23,15 +23,15 @@
         // }).addTo(earth);
 // 
         
-        var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler/{z}/{x}/{y}.png', {
+        var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler2/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by ME!',
           opacity: 1
         });
         bg.addTo(earth);
         
-        var toner = WE.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
+        var toner = WE.tileLayer('http://tile.stamen.com/toner-background/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
-          opacity: 0.6
+          // opacity: 0.6
         });
         toner.addTo(earth);
 
