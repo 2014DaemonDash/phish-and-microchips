@@ -18,17 +18,9 @@
         var bounds = [[35.98245136, -112.26379395], [36.13343831, -112.10998535]];
         earth = new WE.map('earth_div');
         earth.setView([36.057944835, 112.18688965], 1);
-        var watercolor = WE.tileLayer('http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
-          attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'//'Tiles Courtesy of MapQuest'
+        var osm = WE.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg', {
+          attribution: 'Tiles Courtesy of MapQuest'
         }).addTo(earth);
-
-        var toner = WE.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
-          attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
-          opacity: 0.6
-        });
-        toner.addTo(earth);
-
-		// 'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
 
         // var grandcanyon = WE.tileLayer('http://tileserver.maptiler.com/grandcanyon/{z}/{x}/{y}.png', {
           // bounds: bounds,
@@ -62,8 +54,8 @@
       
       function updateBlip(blip, time) {
       	if(time-blip.time >= BLIP_DURATION) {
-      		blip.polygon.destroy();
           blip.marker.detach();
+      		blip.polygon.destroy();
       		blips.splice(blips.indexOf(blip),1);
       		
       		return;
@@ -103,21 +95,23 @@
     		polygonC.setFillColor("#a0f",0.5);
     		polygonC.setStrokeColor("#000",0);
     		
-        var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
-        marker.bindPopup("This is a great place", {maxWidth: 120, closeButton: true}).openPopup();
-
     		for(var i = 0; i < pts.length; i++) {
     			pt_ids.push(polygonC.addPoint(pts[i][0],pts[i][1]));
     		}
     		
     		polygonC.showDraggers(false);
     		
+        var marker = WE.marker([latlng[0], latlng[1]]).addTo(earth);
+        marker.bindPopup("This is a great location", {maxWidth: 150, closeButton: true}).openPopup();
+
     		return {polygon: polygonC,
   				pt_ids: pt_ids,
   				latlng: latlng,
   				time: Date.now(),
           marker: marker
-  			};
+    		};
+
+
       }
     </script>
     <style>
