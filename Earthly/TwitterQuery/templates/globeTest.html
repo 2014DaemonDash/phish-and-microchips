@@ -7,21 +7,25 @@
     <script>
 	  var earth;
 	  var polygonC;
-	  var blips = [];
+	  var clusters = [];
 	    
+	  var CLUSTER_DURATION = 15000;
+	  var CLUSTER_POPUP_DURATION = 5000;
+	  var CLUSTER_RADIUS = 10;		//should be zoom-dependent
+	  
 	  var BLIP_DURATION = 2000;
 	  var BLIP_RADIUS = 3;
 	  var BLIP_MAX_SCALE = 2;
     
       function initialize() {
-
-        var bounds = [[35.98245136, -112.26379395], [36.13343831, -112.10998535]];
-        earth = new WE.map('earth_div');
-        earth.setView([36.057944835, 112.18688965], 1);
-        // var watercolor = WE.tileLayer('http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
-          // attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'//'Tiles Courtesy of MapQuest'
-        // }).addTo(earth);
-// 
+      	initWebGLEarth();
+      	register();
+      	
+        setInterval(updateVis, 33);
+      }
+      
+      function initWebGLEarth() {
+      	        earth = new WE.map('earth_div');
         
         var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler2/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by ME!',
@@ -34,62 +38,125 @@
           // opacity: 0.6
         });
         toner.addTo(earth);
-
-		// 'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
-
-        // var grandcanyon = WE.tileLayer('http://tileserver.maptiler.com/grandcanyon/{z}/{x}/{y}.png', {
-          // bounds: bounds,
-          // minZoom: 10,
-          // maxZoom: 16
-        // });
-        // grandcanyon.addTo(earth);
-        
-        // earth.panInsideBounds(bounds);
-        
-        blips.push(cr_blip(earth.getCenter()));
-        
-        setInterval(updateVis, 33);
       }
+      
+      function register() {
+      	
+      }
+      
+      
       
       function updateVis() {
       	cur_time = Date.now();
       	
-      	for (var i = 0;i < blips.length; i++) {
-      		blip = blips[i];
-      		updateBlip(blip, cur_time);
+      	for (var i = 0;i < clusters.length; i++) {
+      		cluster = clusters[i];
+      		updateCluster(cluster, cur_time);
       	}
       	
-      	if(Math.random() > .95) {
-        	// blips.push(cr_blip([0.1,earth.getCenter()[1] + Math.random()*80 - 40]));
-
-        	blips.push(cr_blip([earth.getCenter()[0] + Math.random()*80 - 40,earth.getCenter()[1] + Math.random()*80 - 40]));
-      	}
       	
+      	requestTweets();
       }
       
-      function updateBlip(blip, time) {
+      function reCluster() {
+      	// Reevaluate clusters on zoom
+      }
+      
+      function manageClusters(tweetList) {
+      	for(int i = 0;i<tweetList.length;i++) {
+      		boolean foundCluster = false;
+      		for(int j = 0;j<clusters.length;j++) {
+      			if(dist(clusters[j].latlng,tweetlist[i].geo.coordinates)<CLUSTER_RADIUS) {
+      				addToCluster(clusters[j],tweetList[i]);
+      				foundCluster = true;
+      			}
+      		}
+      		
+      		if(!foundCluster) {
+      			creatCluster(tweetList[i],"#GETAHASHTAG");		//TODO: GET A HASHTAG!
+      		}
+      	}
+      }
+      
+      function addToCluster(cluster,tweet) {
+      	cluster.tweets.push(tweet);
+      	cluster.time = Date.now();
+      }
+      
+      function createCluster(tweet,hashtag) {
+      	latlng = tweet.geo.coordinates;		//???????????
+      	
+      	var options = {color: '#000', opacity: 1, fillColor: '#a0f', fillOpacity: 0.5, weight: -1};
+      	
+      	var pts = circle(latlng, 20, cluster_RADIUS);
+      	
+      	var pt_ids = [];
+      	
+		polygonC = new WebGLEarth.Polygon(earth);
+		polygonC.setFillColor("#a0f",0.5);
+		polygonC.setStrokeColor("#000",0);
+		
+        var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
+        marker.bindPopup("This is a great place", {maxWidth: 120, closeButton: true}).openPopup();
+
+		for(var i = 0; i < pts.length; i++) {
+			pt_ids.push(polygonC.addPoint(pts[i][0],pts[i][1]));
+		}
+		
+		polygonC.showDraggers(false);
+		
+		return {
+			latlng: latlng,
+			time: Date.now(),
+      		marker: marker,
+      		tweets: [tweet],
+      		hashtag: hashtag,
+      		blips:[{
+      			polygon: polygonC,
+				time: Date.now(),
+				pt_ids: pt_ids,
+      		}],
+		};
+      }
+      
+      function updateCluster(cluster, time) {
+      	if(time-cluster.time >= CLUSTER_DURATION + CLUSTER_POPUP_DURATION) {
+          	cluster.marker.detach();
+      		clusters.splice(clusters.indexOf(cluster),1);
+      		
+      		return;
+      	}
+      	if(time-cluster.time >= CLUSTER_POPUP_DURATION) {
+      		cluster.marker.closePopup();
+      	}
+      	
+      	for(int i = 0;i<cluster.blips.length;i++) {
+      		updateBlip(cluster,cluster.blips[i],time);
+      	}
+      }
+      
+      function updateBlip(cluster,blip, time) {
       	if(time-blip.time >= BLIP_DURATION) {
       		blip.polygon.destroy();
-          blip.marker.detach();
-      		blips.splice(blips.indexOf(blip),1);
+      		cluster.blips.splice(clusters.indexOf(cluster),1);
       		
       		return;
       	}
       	
-      	blip.polygon.setFillColor("#a0f", .5-(time-blip.time)*.5/BLIP_DURATION);
+      	blip.polygon.setFillColor("#a0f", .5-(time-cluster.time)*.5/cluster_DURATION);
       	
-      	new_pts = circle(blip.latlng, 20, BLIP_RADIUS*(1 + (BLIP_MAX_SCALE - 1) * (time - blip.time)/BLIP_DURATION));
+      	new_pts = circle(cluster.latlng, 20, BLIP_RADIUS*(1 + (BLIP_MAX_SCALE - 1) * (time - blip.time)/BLIP_DURATION));
       	
       	for (var i = 0; i < blip.pt_ids.length; i++) {
       		blip.polygon.movePoint(blip.pt_ids[i], new_pts[i][0], new_pts[i][1]);
       	}
       }
       
-      function circle(latlng, sides, rad) {
+      
+      //HELPER FUNCTIONS
+      
+      function circle(latlng, sides, rad) {		//adjusts for longitude lines converging
       	var pts = [];
-      	
-      	// lngWidth = Math.acos(Math.cos(latlng[1] / 180 * Math.PI)/Math.sin(latlng[0] / 180 * Math.PI)) / Math.PI * 180;
-      	// console.log(lngWidth);
       	
       	for(var i = 0; i < sides; i++) {
       		pts.push([Math.cos(i*(2*Math.PI / sides))*rad + latlng[0],Math.sin(i*(2*Math.PI / sides))*rad/Math.cos((Math.cos(i*(2*Math.PI / sides))*rad + latlng[0]) / 180 * Math.PI) + latlng[1]]);
@@ -99,32 +166,14 @@
       	return pts;
       }
       
-      function cr_blip(latlng) {
-      	var options = {color: '#000', opacity: 1, fillColor: '#a0f', fillOpacity: 0.5, weight: -1};
+      function dist(latlng1_deg, latlng2_deg) {		//great circle distance, using haversine formula
+      	var latlng1 = [latlng1_deg[0]*Math.PI/180,latlng1_deg[1]*Math.PI/180];
+      	var latlng2 = [latlng2_deg[0]*Math.PI/180,latlng2_deg[1]*Math.PI/180];
       	
-      	var pts = circle(latlng, 20, BLIP_RADIUS);
+      	sindlat = Math.sin(latlng1[0]-latlng2[0]);
+      	sindlng = Math.sin(latlng1[1]-latlng2[1]);
       	
-      	var pt_ids = [];
-      	
-    		polygonC = new WebGLEarth.Polygon(earth);
-    		polygonC.setFillColor("#a0f",0.5);
-    		polygonC.setStrokeColor("#000",0);
-    		
-        var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
-        marker.bindPopup("This is a great place", {maxWidth: 120, closeButton: true}).openPopup();
-
-    		for(var i = 0; i < pts.length; i++) {
-    			pt_ids.push(polygonC.addPoint(pts[i][0],pts[i][1]));
-    		}
-    		
-    		polygonC.showDraggers(false);
-    		
-    		return {polygon: polygonC,
-  				pt_ids: pt_ids,
-  				latlng: latlng,
-  				time: Date.now(),
-          marker: marker
-  			};
+      	return 2 * Math.asin(Math.sqrt(sindlat*sindlat + cos(latlng1[0])*cos(latlng2[0])*sindlng*sindlng));
       }
     </script>
     <style>
