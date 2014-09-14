@@ -255,7 +255,14 @@
         <div id="titlebar">
             <div id="X"; onclick="close_sidebar()">x</div>
         </div>
-        <div id="side_content"></div>
+        <div id="tabs_header">
+        	<div id="side_content_header" class="tab_header">Tweets</div>
+        	<div id="leaderboard_header" class="tab_header">Leaderboard</div>
+        	<div id="about_header" class="tab_header">About</div>
+        	</div>
+        <div id="side_content" class="tab_content open"></div>
+        <div id="leaderboard" class="tab_content"></div>
+        <div id="about" class="tab_content"></div>
         <div id="open_button" onclick="load_sidebar('')">:</div>
     </div>
   </body>
