@@ -46,8 +46,12 @@ def tweetpipeline(request):
         return HttpResponse("")
     
     tweets = dbhandler.query_db(lat_min, lat_max, lon_min, lon_max, dt)
-    jsontweets = "["+tweets.join(',')+"]"
-    return HttpResponse(jsontweets)
+    
+    dicts = [obj.as_dict() for obj in tweets]
+    
+    print tweets,dt
+    
+    return HttpResponse(json.dumps(dicts))
 
 
 
