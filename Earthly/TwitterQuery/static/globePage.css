@@ -1,3 +1,8 @@
+@font-face {
+    font-family: OrmontLight;
+    src: url(Ormont_Light.ttf);
+}
+
 html {
 	height:100%;
 }
@@ -33,4 +38,13 @@ body {
 	height:100%;
 	float:right;
 	width:0%;
+}
+
+#title {
+	font-family:OrmontLight,Helvetica,sans-serif;
+	z-index:-1;
+	position:absolute;
+	left:40px;
+	top:30px;
+	font-size:120px;
 }
