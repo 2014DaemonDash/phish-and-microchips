@@ -23,5 +23,6 @@ def get_tweets(hashtag_list):
         if(tweet['coordinates'] != None):
             tweetEntry = Tweet(text=tweet['text'], uid=tweet['user']['id'], latitude = tweet['geo']['coordinates'][0], longitude = tweet['geo']['coordinates'][1], datetime = datetime.datetime.now)
             tweetEntry.save()
-    get_tweets(["#love"])
+
+get_tweets(["#love"])
 
