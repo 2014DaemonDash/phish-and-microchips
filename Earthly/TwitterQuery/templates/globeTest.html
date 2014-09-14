@@ -45,7 +45,8 @@
       	}
       	
       	if(Math.random() > .95) {
-        	// blips.push(cr_blip([0.1,earth.getCenter()[1] + Math.random()*80 - 40]));
+        	// blips.push(cr_blip([0.1,earth.getCenter()[1] + Math.random()*80 - 40]));
+
         	blips.push(cr_blip([earth.getCenter()[0] + Math.random()*80 - 40,earth.getCenter()[1] + Math.random()*80 - 40]));
       	}
       	
@@ -54,6 +55,7 @@
       function updateBlip(blip, time) {
       	if(time-blip.time >= BLIP_DURATION) {
       		blip.polygon.destroy();
+          blip.polygon.destroy();
       		blips.splice(blips.indexOf(blip),1);
       		
       		return;
@@ -75,7 +77,8 @@
       	// console.log(lngWidth);
       	
       	for(var i = 0; i < sides; i++) {
-      		pts.push([Math.cos(i*(2*Math.PI / sides))*rad + latlng[0],Math.sin(i*(2*Math.PI / sides))*rad/Math.cos((Math.cos(i*(2*Math.PI / sides))*rad + latlng[0]) / 180 * Math.PI) + latlng[1]]);
+      		pts.push([Math.cos(i*(2*Math.PI / sides))*rad + latlng[0],Math.sin(i*(2*Math.PI / sides))*rad/Math.cos((Math.cos(i*(2*Math.PI / sides))*rad + latlng[0]) / 180 * Math.PI) + latlng[1]]);
+
       	}
       	
       	return pts;
@@ -88,21 +91,25 @@
       	
       	var pt_ids = [];
       	
-		polygonC = new WebGLEarth.Polygon(earth);
-		polygonC.setFillColor("#a0f",0.5);
-		polygonC.setStrokeColor("#000",0);
-		
-		for(var i = 0; i < pts.length; i++) {
-			pt_ids.push(polygonC.addPoint(pts[i][0],pts[i][1]));
-		}
-		
-		polygonC.showDraggers(false);
-		
-		return {polygon: polygonC,
-				pt_ids: pt_ids,
-				latlng: latlng,
-				time: Date.now()
-				};
+    		polygonC = new WebGLEarth.Polygon(earth);
+    		polygonC.setFillColor("#a0f",0.5);
+    		polygonC.setStrokeColor("#000",0);
+    		
+        var marker = WE.marker([latlng[0], latlng[1]]).addTo(earth);
+        marker.bindPopup("This is a great location", {maxWidth: 150, closeButton: true}).openPopup();
+
+    		for(var i = 0; i < pts.length; i++) {
+    			pt_ids.push(polygonC.addPoint(pts[i][0],pts[i][1]));
+    		}
+    		
+    		polygonC.showDraggers(false);
+    		
+    		return {polygon: polygonC,
+  				pt_ids: pt_ids,
+  				latlng: latlng,
+  				time: Date.now(),
+          marker: marker
+  			};
       }
     </script>
     <style>
