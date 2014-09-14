@@ -29,11 +29,12 @@
       	
       	$.ajax({url:"leaderboard",
       	     success:function(result){
-      	     	$("#leaderboard").innerHTML = result;
+      	     	$("#leaderboard").html(result);
       	     }});
        	$.ajax({url:"about",
       	     success:function(result){
-      	     	$("#about").innerHTML = result;
+      	     	console.log(result);
+      	     	$("#about").html(result);
       	     }});
       	
         setInterval(updateVis, 33);
