@@ -9,10 +9,10 @@ import datetime
 import sys
 
 # Login Credentials for @PhishNMicrochip <Twitter>
-API_key = 'iN7fBBBr7o5UYkLVeatCqVL4A'
-API_secret = 'yqCZtmnwkrpb9JOwgH0HLqUNzo1nwYioDLeWpYZHkISXwKNxzg'
-access_key = '2807642348-kGRW760kJjAvpUOrVBWvmz8BTXtljVhQdSzyrH2'
-access_secret = 'JgVYuEZwvCxFBYNOOwbZSs6RTjHf7L4KWlUqsrPig2Fr2'
+API_key = 'ERiVIhyBcoDFAvCbSlxoUbpHR'
+API_secret = '7LQYD68HDEtAJo6WmkoaFaGkM3WGSxmWv5tbE0qQA3kUHL4lFb'
+access_key = '2809615567-dMZAOWXtj4x4VqjjqcjgrxXfMoRdUKggcNPtjzs'
+access_secret = 'Xs3eBq1c8E7yVm7t7CZ1yoLNOS1mr1Ad8xH9Cjy8IScQU'
 api = TwitterAPI(API_key, API_secret, access_key, access_secret)
 
 # Takes list of single quote strings
@@ -20,8 +20,7 @@ api = TwitterAPI(API_key, API_secret, access_key, access_secret)
 def get_tweets(hashtag_list):
     
     tweetls = api.request('statuses/filter', {'track':hashtag_list})
-    print tweetls.text
-    for tweet in tweetls.get_iterator():
+    for tweet in tweetls:
 
         print tweet['text']
 
