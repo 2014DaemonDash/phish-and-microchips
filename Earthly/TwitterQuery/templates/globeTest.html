@@ -44,8 +44,6 @@
         
         var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler3/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by ME!',
-          minZoom: 16,
-          maxZoom: 22,
         });
         bg.addTo(earth);
       }
@@ -70,7 +68,7 @@
       	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
       	     success:function(result){
              console.log(result);
-             handleTweets(eval(result));//[{'text':"This is a fake popup!",'longitude':0,'latitude':0, 'hashtags':['love']}]);
+             handleTweets([{'text':"This is a fake popup!",'longitude':0,'latitude':0, 'hashtags':['love']}]);//eval(result));
              }});
       }
       

@@ -2,18 +2,32 @@ html {
 	height:100%;
 }
 
+body {
+	height:100%;
+}
+
+#sidebar.closingClass{
+    width: 0%;
+    transition: width 1s;
+}
+
+#sidebar.openingClass{
+    width: 25%;
+    transition: width 1s;
+}
+
+#earth_div {
+	z-index:-1;
+}
+
 #sidebar {
+	padding:20px;
+	background-color:#444;
+	border-left:1px #f0a;
+	
+	z-index:99;
+	
 	height:100%;
 	float:right;
-	width:0%
-}
-
-.closingClass{
-    width: 0%
-    transiion: width 1s
-}
-
-.openingClass{
-    width: 25%
-    transition: width 1s
+	width:0%;
 }
