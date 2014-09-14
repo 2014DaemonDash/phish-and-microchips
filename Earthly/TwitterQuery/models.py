@@ -1,4 +1,5 @@
 from django.db import models
+import datetime as dt
 
 class HashTag(models.Model):
     text = models.CharField(max_length = 140, default="")
@@ -18,6 +19,6 @@ class Tweet(models.Model):
     uid = models.IntegerField(default=0)
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
-    datetime = models.DateField(auto_now=True)
+    datetime = dt.datetime(microseconds = models.IntegerField(default = 0) * 1000)
     def __str__(self):
         return "{'text':"+self.text+", 'hashtags':"+self.hashtags+", 'uid':"+str(self.uid)+", 'datetime':"+str(self.datetime)+", 'latitude':"+str(self.latitude)+", 'longitude':"+str(self.longitude)+"}"
