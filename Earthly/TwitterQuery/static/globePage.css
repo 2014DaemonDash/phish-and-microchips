@@ -5,5 +5,15 @@ html {
 #sidebar {
 	height:100%;
 	float:right;
-	width:20%
+	width:0%
+}
+
+.closingClass{
+    width: 0%
+    transiion: width 1s
+}
+
+.openingClass{
+    width: 25%
+    transition: width 1s
 }
