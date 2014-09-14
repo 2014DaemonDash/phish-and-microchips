@@ -65,8 +65,8 @@
      	}
       }
       
-      function requestTweets() {
-      	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
+      function requestTweets() { //lastQuery
+      	$.ajax({url:"tweetpipeline/?old_time="+1+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
       	     success:function(result){
              console.log(result);
              handleTweets(eval(result));
@@ -140,7 +140,7 @@
         next = cluster_next();
 		
         var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
-        popup = "<div class=popup_text><a href='#'; onclick='openClass("+next+")'></a></div>"
+        popup = "<div class=popup_text><a href='#' onclick='openClass("+next+")'></a></div>";
         marker.bindPopup(popup, {maxWidth: 120, closeButton: true}).openPopup();
 		
 		cluster = {
