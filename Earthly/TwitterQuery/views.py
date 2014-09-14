@@ -40,7 +40,7 @@ def tweetpipeline(request):
     lat_min = request.GET.get('min_latitude',None)
     lon_min = request.GET.get('min_longitude',None)
     
-    dt = datetime.timedelta(milleseconds=old_time) + datetime.datetime(year=1970,month=1,day=1)
+    dt = datetime.timedelta(milliseconds=old_time) + datetime.datetime(year=1970,month=1,day=1)
     
     if lat_max is None or lat_min is None or lon_min is None or lon_max is None:
         return HttpResponse("")
