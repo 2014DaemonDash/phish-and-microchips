@@ -9,7 +9,7 @@ class TwitterUser(models.Model):
     score = models.IntegerField()
 
 class Tweet(models.Model):
-    text = models.Charfield(max_length = 141)
+    text = models.CharField(max_length = 141)
     uid = models.IntegerField()
     latitude = models.FloatField()
-    longitude = model.FloatField()
+    longitude = models.FloatField()
