@@ -41,8 +41,8 @@
           // opacity: 0.6
         });
         toner.addTo(earth);
-                
-        var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler8/{z}/{x}/{y}.png', {
+        
+        var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler3/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by ME!',
           minZoom: 16,
           maxZoom: 22,
@@ -66,11 +66,11 @@
      	}
       }
       
-      function requestTweets() {
+      function requestTweets() { //
       	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
       	     success:function(result){
              console.log(result);
-             handleTweets(eval(result));
+             handleTweets(eval(result));//[{'text':"This is a fake popup!",'longitude':0,'latitude':0, 'hashtags':['love']}]);
              }});
       }
       
@@ -100,7 +100,8 @@
       	cluster.tweets.push(tweet);
       	
       	cluster.blips.push(createBlip(cluster));
-      	cluster.marker.bindPopup(tweet.text, {maxWidth: 120, closeButton: true}).openPopup();
+        popup = "<div class=popup_text><a href='#' onclick='load_sidebar("+cluster.id+")'>"+tweet.text+"</a></div>";
+      	cluster.marker.bindPopup(popup, {maxWidth: 120, closeButton: true}).openPopup();
       	
       	cluster.time = Date.now();
       }
@@ -128,14 +129,24 @@
 				pt_ids: pt_ids,
       	};
       }
-      
+    
+    var current_cluster_id = 0;
+    function cluster_next(){
+        c = current_cluster_id;
+        current_cluster_id++;
+        return c;
+    }
+    
       function createCluster(tweet,hashtag) {
       	latlng = [tweet.latitude,tweet.longitude];
+        next = cluster_next();
 		
         var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
-        marker.bindPopup(tweet.text, {maxWidth: 120, closeButton: true}).openPopup();
+        popup = "<div class=popup_text><a href='#' onclick='load_sidebar("+next+")'>"+tweet.text+"</a></div>";
+        marker.bindPopup(popup, {maxWidth: 120, closeButton: true}).openPopup();
 		
 		cluster = {
+            id: next,
 			latlng: latlng,
 			time: Date.now(),
       		marker: marker,
@@ -210,11 +221,21 @@
       	return 2 * Math.asin(Math.sqrt(sindlat*sindlat + Math.cos(latlng1[0])*Math.cos(latlng2[0])*sindlng*sindlng));
       }
     
-      function load_sidebar(tweet_cluster){
-          for(var i=0; i<tweet_cluster.tweets.length; i++){
-              $("#sidebar").append("<div class='tweet_sidebar'>"+tweet_cluster.tweets[i].text+"</div>");
+      function load_sidebar(tweet_cluster_id){
+          the_tweets = null;
+          for(var i=0;i<clusters.length;i++){
+              if(clusters[i].id == tweet_cluster_id){
+                  the_tweets = clusters[i].tweets;
+                  break;
+              }
           }
-          $("#sidebar").attr('class','openingClass');
+          if(the_tweets){
+              $("#side_content").empty();
+              for(var i=0; i<the_tweets.length; i++){
+                  $("#side_content").append("<div class='tweet_sidebar'>"+the_tweets[i].text+"</div>");
+              }
+              $("#sidebar").attr('class','openingClass');
+          }
       }
     
       function close_sidebar(){
@@ -232,8 +253,9 @@
     <div id="earth_div"></div>
   	<div id="sidebar">
         <div id="titlebar">
-            <div id="X"; onclick="close_siderbar()">X</div>
+            <div id="X"; onclick="close_sidebar()">X</div>
         </div>
+        <div id="side_content"></div>
     </div>
   </body>
 </html>
