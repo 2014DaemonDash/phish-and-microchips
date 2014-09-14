@@ -64,7 +64,7 @@
       }
       
       function requestTweets() {
-      	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=45&max_longitude=-80&min_latitude=55&min_longitude=-70",
+      	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
       	     success:function(result){
              console.log(result);
              }});
@@ -78,7 +78,7 @@
       	for(var i = 0;i<tweetList.length;i++) {
       		var foundCluster = false;
       		for(var j = 0;j<clusters.length;j++) {
-      			if(dist(clusters[j].latlng,tweetlist[i].geo.coordinates)<CLUSTER_RADIUS) {
+      			if(dist(clusters[j].latlng,[tweetlist[i].latitude,tweetlist[i].longitude])<CLUSTER_RADIUS) {
       				addToCluster(clusters[j],tweetList[i]);
       				foundCluster = true;
       			}
@@ -96,7 +96,7 @@
       }
       
       function createCluster(tweet,hashtag) {
-      	latlng = tweet.geo.coordinates;		//???????????
+      	latlng = [tweet.latitude,tweet.longitude];
       	
       	var options = {color: '#000', opacity: 1, fillColor: '#a0f', fillOpacity: 0.5, weight: -1};
       	

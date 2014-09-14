@@ -42,14 +42,16 @@ def tweetpipeline(request):
     
     dt = datetime.timedelta(milliseconds=int(old_time)) + datetime.datetime(year=1970,month=1,day=1)
     
+#     print "dt:"+str(dt)
+    
     if lat_max is None or lat_min is None or lon_min is None or lon_max is None:
         return HttpResponse("")
     
     tweets = dbhandler.query_db(lat_min, lat_max, lon_min, lon_max, dt)
     
-    dicts = [obj.as_dict() for obj in tweets]
+#     print "tweet:"+repr(tweets[0].datetime)
     
-    print tweets,dt
+    dicts = [obj.as_dict() for obj in tweets]
     
     return HttpResponse(json.dumps(dicts))
 

@@ -19,7 +19,7 @@ class Tweet(models.Model):
     uid = models.IntegerField(default=0)
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
-    datetime = models.DateField(default=dt.datetime.now())
+    datetime = models.DateTimeField(default=dt.datetime.now)
     def as_dict(self):
         return {'text':self.text,
                 'hashtags':self.hashtags,
