@@ -240,8 +240,14 @@
           $("#sidebar").attr('class','closingClass');
       }
       
-      function openTab() {
+      function openTab(e) {
+	    if (!e)
+	        e = window.event;
+	    var sender = e.srcElement || e.target;
+	    
       	$(".tab_content").removeClass("open");
+      	console.log($(sender.id.substr(0,sender.id.length-7)));
+      	$("#"+sender.id.substr(0,sender.id.length-7)).addClass("open");
       }
     </script>
     <style>
@@ -260,9 +266,9 @@
             <div id="X"; onclick="close_sidebar()">x</div>
         </div>
         <div id="tabs_header">
-        	<div id="side_content_header" class="tab_header">Tweets</div>
-        	<div id="leaderboard_header" class="tab_header">Leaderboard</div>
-        	<div id="about_header" class="tab_header">About</div>
+        	<div id="side_content_header" class="tab_header" onclick="openTab();">Tweets</div>
+        	<div id="leaderboard_header" class="tab_header" onclick="openTab();">Leaderboard</div>
+        	<div id="about_header" class="tab_header" onclick="openTab();">About</div>
         	</div>
         <div id="side_content" class="tab_content open"></div>
         <div id="leaderboard" class="tab_content"></div>
