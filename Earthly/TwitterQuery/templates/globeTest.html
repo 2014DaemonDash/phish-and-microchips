@@ -99,7 +99,8 @@
       	cluster.tweets.push(tweet);
       	
       	cluster.blips.push(createBlip(cluster));
-      	cluster.marker.bindPopup(tweet.text, {maxWidth: 120, closeButton: true}).openPopup();
+        popup = "<div class=popup_text><a href='#' onclick='openClass("+cluster.id+")'></a></div>";
+      	cluster.marker.bindPopup(popup, {maxWidth: 120, closeButton: true}).openPopup();
       	
       	cluster.time = Date.now();
       }
