@@ -4,6 +4,7 @@
 # Uses TwitterAPI
 # Clone url: https://github.com/geduldig/TwitterAPI.git
 from TwitterAPI import TwitterAPI
+from TwitterQuery.models.py import Tweet
 
 
 # Login Credentials for @PhishNMicrochip <Twitter>
@@ -22,13 +23,14 @@ def get_tweets(hashtag_list, last_time=None):
         if(last_time !=None):
             query += ' since'
             query += last_time
-        tweetls = api.request('search/tweets', {'q':query})#,'g':'39.0012,-76.9317,50mi'})
+        tweetls = api.request('statuses/filter', {'track':[query]})
         for tweet in tweetls.get_iterator():
-            if(tweet['coordinates'] !=None):
-                print tweet
-                print "\n\n\n\n\n"
+            if(tweet['coordinates'] != None):
+                
+                tweetEntry = Tweet(text=tweet['text'], uid=tweet['user']['id'], latitude = tweet['geo']['coordinates'][0], longitude = tweet['geo']['coordinates'][1])
+                tweetEntry.save()
 
 def get_user_friends(uid):
     return api.request('friends/ids', {'q':uid})
 
-get_tweets(["NashvsHayes"])
+get_tweets(["#love"])

@@ -9,6 +9,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.globe_page_view),
+<<<<<<< HEAD
     
     #what do we do here?
     #url(r'^background/([0-9]{4})/([0-9]{2})/' views.month_archive),
@@ -18,4 +19,7 @@ urlpatterns = patterns('',
     url(r'^leaderboard/', views.leaderboard),
     #requires: ?users='name,name,...'
     url(r'^scoreuser/', views.userscores),
+=======
+    url(r'^test/$', views.test_view),
+>>>>>>> e93cf83c73bb1c7c337351dffbf52087db8b4c64
 )

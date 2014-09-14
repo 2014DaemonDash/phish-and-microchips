@@ -18,10 +18,17 @@
         var bounds = [[35.98245136, -112.26379395], [36.13343831, -112.10998535]];
         earth = new WE.map('earth_div');
         earth.setView([36.057944835, 112.18688965], 1);
-        var watercolor = WE.tileLayer('http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
-          attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'//'Tiles Courtesy of MapQuest'
-        }).addTo(earth);
-
+        // var watercolor = WE.tileLayer('http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
+          // attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'//'Tiles Courtesy of MapQuest'
+        // }).addTo(earth);
+// 
+        
+        var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler/{z}/{x}/{y}.png', {
+          attribution: 'Map tiles by ME!',
+          opacity: 1
+        });
+        bg.addTo(earth);
+        
         var toner = WE.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
           opacity: 0.6
