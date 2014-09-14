@@ -29,7 +29,7 @@
       	
         setInterval(updateVis, 33);
         
-        clusters.push(createCluster({latitude:45,longitude:-90,text:"ahaha"},"#ahaha"));
+        //clusters.push(createCluster({latitude:45,longitude:-90,text:"ahaha"},"#ahaha"));
       }
   
       function initWebGLEarth() {
@@ -44,11 +44,6 @@
         
         var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler3/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by ME!',
-<<<<<<< HEAD
-          //minZoom: 16,
-          //maxZoom: 22,
-=======
->>>>>>> d995749cebe2898094305cfea0d32549c108bf44
         });
         bg.addTo(earth);
       }
@@ -73,7 +68,7 @@
       	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
       	     success:function(result){
              console.log(result);
-             handleTweets([{'text':"This is a fake popup!",'longitude':0,'latitude':0, 'hashtags':['love']}]);//eval(result));
+             handleTweets(eval(result));//[{'text':"This is a fake popup!",'longitude':0,'latitude':0, 'hashtags':['love']}]);
              }});
       }
       
@@ -244,6 +239,16 @@
       function close_sidebar(){
           $("#sidebar").attr('class','closingClass');
       }
+      
+      function openTab(e) {
+	    if (!e)
+	        e = window.event;
+	    var sender = e.srcElement || e.target;
+	    
+      	$(".tab_content").removeClass("open");
+      	console.log($(sender.id.substr(0,sender.id.length-7)));
+      	$("#"+sender.id.substr(0,sender.id.length-7)).addClass("open");
+      }
     </script>
     <style>
       html, body{padding: 0; margin: 0;}
@@ -254,12 +259,21 @@
   </head>
   <body onload="initialize()">
   	<span id="title">earth.ly</span>
+  	<div id="shadow"></div>
     <div id="earth_div"></div>
   	<div id="sidebar">
         <div id="titlebar">
-            <div id="X"; onclick="close_sidebar()">X</div>
+            <div id="X"; onclick="close_sidebar()">x</div>
         </div>
-        <div id="side_content"></div>
+        <div id="tabs_header">
+        	<div id="side_content_header" class="tab_header" onclick="openTab();">Tweets</div>
+        	<div id="leaderboard_header" class="tab_header" onclick="openTab();">Leaderboard</div>
+        	<div id="about_header" class="tab_header" onclick="openTab();">About</div>
+        	</div>
+        <div id="side_content" class="tab_content open"></div>
+        <div id="leaderboard" class="tab_content"></div>
+        <div id="about" class="tab_content"></div>
+        <div id="open_button" onclick="load_sidebar('')">:</div>
     </div>
   </body>
 </html>
