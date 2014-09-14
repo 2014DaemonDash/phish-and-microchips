@@ -1,26 +1,32 @@
 #
 #
-import TwitterQuery.models
+from TwitterQuery.models import Tweet, HashTag, TwitterUser
 
 
-# Pulls user score
 def read_user_score(uid):
-    print ""
+    return TwitterUser.objects.get(name=uid).score
 
-# Pulls tag score
 def read_tag_score(tag):
-    print ""
+    return HashTag.objects.get(text=tag).score
 
 # Adds to user score
 def update_user_score(uid, val):
-    print ""
+    ch = TwitterUser.objects.get(name=uid)
+    ch.score = read_user_score(uid) + val
+    ch.save()
 
 # Adds to tag score
 def update_tag_score(tag, val):
-    print ""
+    ch = HashTag.objects.get(text=tag)
+    ch.score = read_user_score(uid) + val
+    ch.save()
+
+# Tag in form '#HASHTAG'
+def query_db(tag, lat_min, lat_max, long_min, long_max):
+    return Tweet.objects.filter(text__contains tag, latitude__gte lat_min, latitude__lte lat_max, longitude__gte long_min, longitude__lte long_max)
 
 def get_followers(uid):
-    print ""
+    return []
 
 def score_update(tweet):
     hashtags = tweet['hashtags']['text']
@@ -29,8 +35,6 @@ def score_update(tweet):
         total_hashvalue += read_tag_score(item)
 
     # Update user and follower scores
-    for contributor in tweet['contributors']:
-        update_user_score(contributor['id'], total_hashvalue)
     update_user_score(tweet['user']['id'])
     for user in get_followers(tweet['user']['id']):
         update_user_score(user['id'],total_hashvalue/3.3)
