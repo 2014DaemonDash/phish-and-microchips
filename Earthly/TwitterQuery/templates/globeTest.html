@@ -68,7 +68,7 @@
       	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
       	     success:function(result){
              console.log(result);
-             handleTweets(eval(result));//[{'text':"This is a fake popup!",'longitude':0,'latitude':0, 'hashtags':['love']}]);
+             handleTweets([{'text':"This is a fake popup!",'longitude':0,'latitude':0, 'hashtags':['love']}]);//eval(result));
              }});
       }
       
@@ -248,6 +248,7 @@
     <title>WebGL Earth API: Maps rendered with MapTiler</title>
   </head>
   <body onload="initialize()">
+  	<span id="title">earth.ly</span>
     <div id="earth_div"></div>
   	<div id="sidebar">
         <div id="titlebar">
