@@ -1,19 +1,50 @@
+@font-face {
+    font-family: OrmontLight;
+    src: url(Ormont_Light.ttf);
+}
+
 html {
 	height:100%;
 }
 
+body {
+	height:100%;
+	background-color:#aaa;
+}
+
+#sidebar.closingClass{
+    width: 0%;
+    transition: width 1s;
+}
+
+#sidebar.openingClass{
+    width: 25%;
+    transition: width 1s;
+}
+
+#earth_div {
+}
+
 #sidebar {
+	padding:20px;
+	background-color:#888;
+	border-left:1px #f0a;
+	
+	box-shadow: -20px 0px 0px 10px rgba(0,0,0,.3);
+	
+	z-index:99;
+	
+	position:relative;
 	height:100%;
 	float:right;
-	width:0%
+	width:0%;
 }
 
-.closingClass{
-    width: 0%
-    transiion: width 1s
-}
-
-.openingClass{
-    width: 25%
-    transition: width 1s
+#title {
+	font-family:OrmontLight,Helvetica,sans-serif;
+	z-index:-1;
+	position:absolute;
+	left:40px;
+	top:30px;
+	font-size:120px;
 }
