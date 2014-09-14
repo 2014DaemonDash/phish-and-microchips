@@ -1,7 +1,7 @@
 from django.contrib import admin
-from TwitterQuery.models import SearchTerm
+from TwitterQuery.models import HashTag
 
-admin.site.register(SearchTerm)
+admin.site.register(HashTag)
 
 # Register your models here.
 

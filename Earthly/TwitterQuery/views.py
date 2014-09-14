@@ -14,7 +14,17 @@ def leaderboard(request):
     return HttpResponse(json.dumps(leaders))
 
 def userscores(request):
-    return HttpResponse("unimplemented")
+    out = {}
+
+    users = request.GET.get('users',"").split(',')
+    #set this with the user data
+    db = {'alice':123,'bob':456,'charlie':789}
+    
+    for k,v in db.iteritems():
+        if k in users:
+            out[k]=v
+        
+    return HttpResponse(json.dumps(out))
 
 def test_view(request):
     return HttpResponse("hello world");
