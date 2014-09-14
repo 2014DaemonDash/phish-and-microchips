@@ -1,7 +1,8 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <script src="http://www.webglearth.com/v2/api.js"></script>
+    <!-- <script src="http://www.webglearth.com/v2/api.js"></script> -->
+    <script src="http://127.0.0.1:8000/static/lib/WebGLEarth/api-min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
     <script>
@@ -25,21 +26,22 @@
       	
         setInterval(updateVis, 33);
       }
-      
+  
       function initWebGLEarth() {
-      	        earth = new WE.map('earth_div');
+      	earth = new WE.map('earth_div');
+
         
-        var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler2/{z}/{x}/{y}.png', {
-          attribution: 'Map tiles by ME!',
-          opacity: 1
-        });
-        bg.addTo(earth);
-        
-        var toner = WE.tileLayer('http://tile.stamen.com/toner-background/{z}/{x}/{y}.png', {
+        var toner = WE.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
           attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
           // opacity: 0.6
         });
         toner.addTo(earth);
+                
+        var bg = WE.tileLayer('http://127.0.0.1:8000/static/MapTiler3/{z}/{x}/{y}.png', {
+          attribution: 'Map tiles by ME!',
+          opacity: 1
+        });
+        bg.addTo(earth);
       }
       
       function register() {
@@ -58,7 +60,11 @@
       	
       	
       	
-      	requestTweets();
+      	// requestTweets();
+      }
+      
+      function requestTweets() {
+      	
       }
       
       function reCluster() {
@@ -66,9 +72,9 @@
       }
       
       function manageClusters(tweetList) {
-      	for(int i = 0;i<tweetList.length;i++) {
-      		boolean foundCluster = false;
-      		for(int j = 0;j<clusters.length;j++) {
+      	for(var i = 0;i<tweetList.length;i++) {
+      		var foundCluster = false;
+      		for(var j = 0;j<clusters.length;j++) {
       			if(dist(clusters[j].latlng,tweetlist[i].geo.coordinates)<CLUSTER_RADIUS) {
       				addToCluster(clusters[j],tweetList[i]);
       				foundCluster = true;
@@ -133,7 +139,7 @@
       		cluster.marker.closePopup();
       	}
       	
-      	for(int i = 0;i<cluster.blips.length;i++) {
+      	for(var i = 0;i<cluster.blips.length;i++) {
       		updateBlip(cluster,cluster.blips[i],time);
       	}
       }

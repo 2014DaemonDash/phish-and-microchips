@@ -7,7 +7,8 @@ import dbhandler
 
 def globe_page_view(request):
     return render(request,'globeTest.html',None)
-
+def cesHW(request):
+    return render(request,'HelloWorld.html',None)
 
 def leaderboard(request):
     
