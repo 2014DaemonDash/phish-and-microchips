@@ -7,7 +7,6 @@ class Command(NoArgsCommand):
     can_import_settings = True
 
     def handle_noargs(self, *args, **options):
-    
         hashtags = []
         
         for hash in HashTag.objects.all():

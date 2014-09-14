@@ -12,7 +12,7 @@
 	    
 	  var CLUSTER_DURATION = 15000;
 	  var CLUSTER_POPUP_DURATION = 5000;
-	  var CLUSTER_RADIUS = 10;		//should be zoom-dependent
+	  var CLUSTER_RADIUS = .1;		//should be zoom-dependent
 	  
 	  var BLIP_DURATION = 2000;
 	  var BLIP_RADIUS = 3;
@@ -20,7 +20,7 @@
 	  
 	  var QUERY_FREQUENCY = 3000;
 	  
-	  var lastQuery = 0;
+	  var lastQuery = $.now();
 	  
 	  var prevZoom = 1;
     
@@ -67,6 +67,7 @@
       	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=90&max_longitude=180&min_latitude=-90&min_longitude=-180",
       	     success:function(result){
              console.log(result);
+             handleTweets(eval(result));
              }});
       }
       
@@ -74,42 +75,43 @@
       	// Reevaluate clusters on zoom
       }
       
-      function manageClusters(tweetList) {
-      	for(var i = 0;i<tweetList.length;i++) {
-      		var foundCluster = false;
-      		for(var j = 0;j<clusters.length;j++) {
-      			if(dist(clusters[j].latlng,[tweetlist[i].latitude,tweetlist[i].longitude])<CLUSTER_RADIUS) {
-      				addToCluster(clusters[j],tweetList[i]);
-      				foundCluster = true;
-      			}
-      		}
-      		
-      		if(!foundCluster) {
-      			creatCluster(tweetList[i],"#GETAHASHTAG");		//TODO: GET A HASHTAG!
-      		}
+      function handleTweets(tweetList) {
+      	if(tweetList.length>0) {
+	      	for(var i = 0;i<tweetList.length;i++) {
+	      		var foundCluster = false;
+	      		for(var j = 0;j<clusters.length;j++) {
+	      			if(dist(clusters[j].latlng,[tweetList[i].latitude,tweetList[i].longitude])<CLUSTER_RADIUS) {
+	      				addToCluster(clusters[j],tweetList[i]);
+	      				foundCluster = true;
+	      			}
+	      		}
+	      		
+	      		if(!foundCluster) {
+	      			clusters.push(createCluster(tweetList[i],tweetList[i].hashtags[0]));		//TODO: GET A HASHTAG!
+	      		}
+	      	}
       	}
       }
       
       function addToCluster(cluster,tweet) {
       	cluster.tweets.push(tweet);
+      	
+      	cluster.blips.push(createBlip(cluster));
+      	cluster.marker.bindPopup(tweet.text, {maxWidth: 120, closeButton: true}).openPopup();
+      	
       	cluster.time = Date.now();
       }
       
-      function createCluster(tweet,hashtag) {
-      	latlng = [tweet.latitude,tweet.longitude];
+      function createBlip(cluster) {
+      	var options = {color: '#000', opacity: 1, fillColor: '#a0f', fillOpacity: 0.5, weight: 4};
       	
-      	var options = {color: '#000', opacity: 1, fillColor: '#a0f', fillOpacity: 0.5, weight: -1};
-      	
-      	var pts = circle(latlng, 20, cluster_RADIUS);
+      	var pts = circle(cluster.latlng, 20, CLUSTER_RADIUS);
       	
       	var pt_ids = [];
       	
 		polygonC = new WebGLEarth.Polygon(earth);
 		polygonC.setFillColor("#a0f",0.5);
 		polygonC.setStrokeColor("#000",0);
-		
-        var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
-        marker.bindPopup("This is a great place", {maxWidth: 120, closeButton: true}).openPopup();
 
 		for(var i = 0; i < pts.length; i++) {
 			pt_ids.push(polygonC.addPoint(pts[i][0],pts[i][1]));
@@ -118,17 +120,30 @@
 		polygonC.showDraggers(false);
 		
 		return {
+      			polygon: polygonC,
+				time: Date.now(),
+				pt_ids: pt_ids,
+      	};
+      }
+      
+      function createCluster(tweet,hashtag) {
+      	latlng = [tweet.latitude,tweet.longitude];
+		
+        var marker = WE.marker([latlng[0],latlng[1]]).addTo(earth);
+        marker.bindPopup(tweet.text, {maxWidth: 120, closeButton: true}).openPopup();
+		
+		cluster = {
 			latlng: latlng,
 			time: Date.now(),
       		marker: marker,
       		tweets: [tweet],
       		hashtag: hashtag,
-      		blips:[{
-      			polygon: polygonC,
-				time: Date.now(),
-				pt_ids: pt_ids,
-      		}],
+      		blips:[],
 		};
+		
+		cluster.blips.push(createBlip(cluster));
+		
+		return cluster;
       }
       
       function updateCluster(cluster, time) {
@@ -136,10 +151,14 @@
           	cluster.marker.detach();
       		clusters.splice(clusters.indexOf(cluster),1);
       		
+      		console.log("BYE!");
+      		
       		return;
       	}
       	if(time-cluster.time >= CLUSTER_POPUP_DURATION) {
       		cluster.marker.closePopup();
+      		
+      		console.log("popup closed");
       	}
       	
       	for(var i = 0;i<cluster.blips.length;i++) {
@@ -150,12 +169,12 @@
       function updateBlip(cluster,blip, time) {
       	if(time-blip.time >= BLIP_DURATION) {
       		blip.polygon.destroy();
-      		cluster.blips.splice(clusters.indexOf(cluster),1);
+      		cluster.blips.splice(cluster.blips.indexOf(blip),1);
       		
       		return;
       	}
       	
-      	blip.polygon.setFillColor("#a0f", .5-(time-cluster.time)*.5/cluster_DURATION);
+      	blip.polygon.setFillColor("#a0f", .5-(time-cluster.time)*.5/BLIP_DURATION);
       	
       	new_pts = circle(cluster.latlng, 20, BLIP_RADIUS*(1 + (BLIP_MAX_SCALE - 1) * (time - blip.time)/BLIP_DURATION));
       	
@@ -185,7 +204,7 @@
       	sindlat = Math.sin(latlng1[0]-latlng2[0]);
       	sindlng = Math.sin(latlng1[1]-latlng2[1]);
       	
-      	return 2 * Math.asin(Math.sqrt(sindlat*sindlat + cos(latlng1[0])*cos(latlng2[0])*sindlng*sindlng));
+      	return 2 * Math.asin(Math.sqrt(sindlat*sindlat + Math.cos(latlng1[0])*Math.cos(latlng2[0])*sindlng*sindlng));
       }
     
       function load_sidebar(tweet_cluster){

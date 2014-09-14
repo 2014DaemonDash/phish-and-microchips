@@ -6,6 +6,7 @@
 from TwitterAPI import TwitterAPI
 from TwitterQuery.models import Tweet
 import datetime
+import sys
 
 # Login Credentials for @PhishNMicrochip <Twitter>
 API_key = 'iN7fBBBr7o5UYkLVeatCqVL4A'
@@ -25,6 +26,8 @@ def get_tweets(hashtag_list):
         print tweet['text']
 
         if(tweet['coordinates'] != None):
+            
+            print unicode(tweet['text']).encode(sys.stdout.encoding, errors='replace')
             
             myHashes = ""
             
