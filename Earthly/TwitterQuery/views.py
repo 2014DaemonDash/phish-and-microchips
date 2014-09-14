@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from TwitterQuery import models
 import json
@@ -13,9 +13,16 @@ def cesHW(request):
 def leaderboard(request):
     
     #enter the leaders here
-    leaders = {'firstleader':2134213,'secondleader':2134212,}
+    leaders = [
+               {'name':'johnny tablecloth','score':2242},
+               {'name':'techabunch','score':2113},
+               {'name':'georgepancakes','score':1263},
+               {'name':'kernie12','score':1223},
+               {'name':'bobwagnerwhynot?','score':849},
+               {'name':'capt_awsm_123','score':272},
+               ]
     
-    return HttpResponse(json.dumps(leaders))
+    return render_to_response('leader.html',{'leaders':leaders})
 
 def userscores(request):
     out = {}
@@ -27,7 +34,7 @@ def userscores(request):
     #all users
     all = models.TwitterUser.objects.all();
     for rec in all:   
-        db[k.name] = k.score
+        db[rec.name] = rec.score
     
     for k,v in db.iteritems():
         if k in users:

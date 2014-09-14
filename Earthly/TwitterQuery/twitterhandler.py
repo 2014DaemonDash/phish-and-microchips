@@ -20,12 +20,11 @@ api = TwitterAPI(API_key, API_secret, access_key, access_secret)
 def get_tweets(hashtag_list):
     
     tweetls = api.request('statuses/filter', {'track':hashtag_list})
-    #print tweetls.text
-    for tweet in tweetls.get_iterator():
-
-        print tweet['text']
+    for tweet in tweetls:
 
         if(tweet['coordinates'] != None):
+            
+#             print tweet['text']
             
             print unicode(tweet['text']).encode(sys.stdout.encoding, errors='replace')
             
