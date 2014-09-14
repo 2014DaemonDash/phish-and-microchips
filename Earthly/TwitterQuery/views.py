@@ -38,7 +38,8 @@ def tweetpipeline(request):
     lon_max = request.GET.get('max_longitude',None)
     lat_min = request.GET.get('min_latitude',None)
     lon_min = request.GET.get('min_longitude',None)
-    if lat is None || lon is None: return HttpResponse("")
+    if lat_max is None or lat_min is None or lon_min is None or lon_max is None:
+        return HttpResponse("")
     
     tweets = dbhandler.query_db(lat_min, lat_max, lon_min, lon_max, old_time)
     jsontweets = "["+tweets.join(',')+"]"
