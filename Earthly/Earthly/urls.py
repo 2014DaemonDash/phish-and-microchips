@@ -10,9 +10,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.globe_page_view),
 
-    url(r'^test/$', twitterhandler.get_tweets),
+    url(r'^testtwit/$', twitterhandler.get_tweets),
 
-    
     #what do we do here?
     #url(r'^background/([0-9]{4})/([0-9]{2})/' views.month_archive),
     
