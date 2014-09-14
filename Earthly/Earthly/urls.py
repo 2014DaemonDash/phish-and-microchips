@@ -9,4 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.globe_page_view),
+    url(r'^test/$', views.test_view),
 )
