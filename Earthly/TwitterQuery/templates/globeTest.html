@@ -16,6 +16,8 @@
 	  var BLIP_DURATION = 2000;
 	  var BLIP_RADIUS = 3;
 	  var BLIP_MAX_SCALE = 2;
+	  
+	  var prevZoom = 1;
     
       function initialize() {
       	initWebGLEarth();
@@ -53,6 +55,7 @@
       		cluster = clusters[i];
       		updateCluster(cluster, cur_time);
       	}
+      	
       	
       	
       	requestTweets();
