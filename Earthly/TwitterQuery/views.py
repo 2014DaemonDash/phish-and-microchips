@@ -19,10 +19,15 @@ def leaderboard(request):
 
 def userscores(request):
     out = {}
-
+    db = {}
+    
+    # requested users
     users = request.GET.get('users',"").split(',')
-    #set this with the user data
-    db = {'alice':123,'bob':456,'charlie':789}
+    
+    #all users
+    all = models.TwitterUser.objects.all();
+    for rec in all:   
+        db[k.name] = k.score
     
     for k,v in db.iteritems():
         if k in users:
