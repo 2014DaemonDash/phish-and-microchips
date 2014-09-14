@@ -21,9 +21,9 @@ def update_tag_score(tag, val):
     ch.score = read_user_score(uid) + val
     ch.save()
 
-# Tag in form '#HASHTAG'
-def query_db(tag, lat_min, lat_max, long_min, long_max, dtstart):
-    return Tweet.objects.filter(text__contains=tag, latitude__gte=lat_min, latitude__lte=lat_max, longitude__gte=long_min, longitude__lte=long_max, datetime__gte=dtstart)
+# Tag in form '#HASHTAG' text__contains=tag,
+def query_db(lat_min, lat_max, long_min, long_max, dtstart):
+    return Tweet.objects.filter(latitude__gte=lat_min, latitude__lte=lat_max, longitude__gte=long_min, longitude__lte=long_max, datetime__gte=dtstart)
 
 def get_followers(uid):
     return []
