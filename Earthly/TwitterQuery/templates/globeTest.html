@@ -18,11 +18,14 @@
 	  var BLIP_RADIUS = 3;
 	  var BLIP_MAX_SCALE = 2;
 	  
+	  var QUERY_FREQUENCY = 3000;
+	  
+	  var lastQuery = 0;
+	  
 	  var prevZoom = 1;
     
       function initialize() {
       	initWebGLEarth();
-      	register();
       	
         setInterval(updateVis, 33);
       }
@@ -43,12 +46,7 @@
         });
         bg.addTo(earth);
       }
-      
-      function register() {
-      	
-      }
-      
-      
+            
       
       function updateVis() {
       	cur_time = Date.now();
@@ -59,12 +57,17 @@
       	}
       	
       	
-      	
-      	// requestTweets();
+      	if(cur_time-lastQuery > QUERY_FREQUENCY) {
+      		requestTweets();
+      		lastQuery = cur_time;
+     	}
       }
       
       function requestTweets() {
-      	
+      	$.ajax({url:"tweetpipeline/?old_time="+lastQuery+"&max_latitude=45&max_longitude=-80&min_latitude=55&min_longitude=-70",
+      	     success:function(result){
+             console.log(result);
+             }});
       }
       
       function reCluster() {
