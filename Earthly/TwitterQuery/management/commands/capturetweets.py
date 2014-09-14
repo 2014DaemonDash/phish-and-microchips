@@ -6,4 +6,4 @@ class Command(NoArgsCommand):
     can_import_settings = True
 
     def handle_noargs(self, *args, **options):
-        twitterhandler.get_tweets(["#love"])
+        twitterhandler.get_tweets('#love')
