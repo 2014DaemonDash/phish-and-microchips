@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^$', views.globe_page_view),
     url(r'^test/$', twitterhandler.get_tweets),
     url(r'^cesHW/$', views.cesHW),
+    url(r'^about/$', views.about),
     
     #requires: none
     #returns json object {'name':score,...}

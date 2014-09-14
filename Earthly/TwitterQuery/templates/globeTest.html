@@ -27,6 +27,15 @@
       function initialize() {
       	initWebGLEarth();
       	
+      	$.ajax({url:"leaderboard",
+      	     success:function(result){
+      	     	$("#leaderboard").innerHTML = result;
+      	     }});
+       	$.ajax({url:"about",
+      	     success:function(result){
+      	     	$("#about").innerHTML = result;
+      	     }});
+      	
         setInterval(updateVis, 33);
         
         //clusters.push(createCluster({latitude:45,longitude:-90,text:"ahaha"},"#ahaha"));
@@ -220,6 +229,10 @@
       }
     
       function load_sidebar(tweet_cluster_id){
+      	if(tweet_cluster_id=='') {
+              $("#sidebar").attr('class','openingClass');
+              return;
+      	}
           the_tweets = null;
           for(var i=0;i<clusters.length;i++){
               if(clusters[i].id == tweet_cluster_id){

@@ -24,6 +24,9 @@ def leaderboard(request):
     
     return render_to_response('leader.html',{'leaders':leaders})
 
+def about(request):
+    return render(request,'about.html',None)
+
 def userscores(request):
     out = {}
     db = {}
